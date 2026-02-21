@@ -93,12 +93,12 @@ def build_and_index():
         print(f"Excel Error: {e}")
         return
 
-    # Define your Brand Identity
     company_name = "Hubnest"
     tagline = "Essential Services, Expert Solutions"
     book_title = "Becoming You: Confidence, Connection, and Growth"
+    # Your provided Google Profile image
+    book_cover_url = "https://play-lh.googleusercontent.com/nIKYSu9wpS89zWGbVtI5fiNjokKbZK_ZZB0rAog7NlHXb9NZtWr05QgI-8HPNSCYy_vO7nUwE9ED9g=w480-h690-rw"
 
-    # 🔥 Runs TWICE: 1 Plumbing Page + 1 Book Page per execution
     for category in ["plumbing", "book"]:
         row = df.sample(n=1).iloc[0]
         city, zip_code = str(row['City']), str(row['ZipCode'])
@@ -113,82 +113,75 @@ def build_and_index():
         file_path = f"services/{slug}.html"
         full_url = f"https://serviceshubnest.github.io/hubnest.github.io/{file_path}"
 
-        # THE UPDATED PAGE DESIGN
         html = f"""<!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>{keyword} | {company_name}</title>
+    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script type="application/ld+json">
-    {{
-      "@context": "https://schema.org",
-      "@type": "LocalBusiness",
-      "name": "{company_name}",
-      "description": "{keyword}",
-      "telephone": "(308) 550-8314",
-      "address": {{
-        "@type": "PostalAddress",
-        "addressLocality": "{city}",
-        "postalCode": "{zip_code}",
-        "addressCountry": "US"
-      }}
-    }}
-    </script>
+    <title>{keyword} | {company_name}</title>
+    <style>
+        body {{ font-family: -apple-system, system-ui, sans-serif; background: #f8f9fa; margin: 0; padding: 0; color: #202124; }}
+        .header {{ background: #fff; border-bottom: 2px solid #1a73e8; padding: 20px; text-align: center; }}
+        .content {{ max-width: 600px; margin: 20px auto; padding: 20px; background: #fff; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }}
+        .preview-card {{ 
+            display: flex; border: 1px solid #dadce0; border-radius: 8px; overflow: hidden; 
+            text-decoration: none; color: inherit; margin-top: 25px; transition: background 0.2s;
+        }}
+        .preview-card:hover {{ background: #f1f3f4; }}
+        .cover-img {{ width: 120px; height: 160px; object-fit: cover; border-right: 1px solid #dadce0; }}
+        .details {{ padding: 15px; display: flex; flex-direction: column; justify-content: center; }}
+        .badge {{ width: 140px; margin-top: 10px; }}
+        .call-box {{ background: #e8f0fe; padding: 15px; border-radius: 8px; margin: 20px 0; text-align: center; }}
+        .audio-link {{ color: #1e8e3e; font-weight: bold; text-decoration: none; font-size: 14px; margin-top: 8px; display: block; }}
+    </style>
 </head>
-<body style='font-family: sans-serif; padding: 0; margin: 0; line-height: 1.6; background: #fdfdfd; color: #333;'>
-    
-    <div style='background: #fff; border-bottom: 3px solid #007bff; padding: 25px; text-align: center;'>
-        <h1 style='margin: 0; color: #222; font-size: 28px; letter-spacing: -1px;'>{company_name}</h1>
-        <p style='margin: 5px 0 0 0; color: #555; font-weight: 600; font-size: 15px;'>{tagline}</p>
+<body>
+
+    <div class="header">
+        <h1 style="margin:0; font-size: 24px;">{company_name}</h1>
+        <p style="margin:5px 0 0; color: #1a73e8; font-weight: bold; font-size: 14px; text-transform: uppercase;">{tagline}</p>
     </div>
 
-    <div style='max-width: 700px; margin: 30px auto; padding: 20px; background: white; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.05);'>
-        <h2 style='color: #0056b3; border-bottom: 1px solid #eee; padding-bottom: 10px;'>{keyword}</h2>
-        <p>Looking for reliable support in <b>{city} ({zip_code})</b>? <b>{company_name}</b> delivers <i>{tagline}</i> for every client. Our local team is ready to assist you with professional care and efficiency.</p>
+    <div class="content">
+        <h2 style="font-size: 20px; color: #1a73e8;">{keyword}</h2>
+        <p>Reliable support and expert solutions for the residents of <b>{city}, {zip_code}</b>. We pride ourselves on quality service and customer satisfaction.</p>
+
+        <div class="call-box">
+            <strong>📞 Need Assistance?</strong><br>
+            <a href="tel:3085508314" style="font-size: 20px; color: #1a73e8; text-decoration: none; font-weight: bold;">(308) 550-8314</a>
+        </div>
+
+        <hr style="border:0; border-top: 1px solid #eee; margin: 30px 0;">
+
+        <p style="font-size: 12px; color: #70757a; text-transform: uppercase; font-weight: bold; letter-spacing: 0.5px;">Verified Recommendation</p>
         
-        <div style='background: #e7f3ff; border-left: 5px solid #007bff; padding: 15px; margin: 20px 0; border-radius: 0 5px 5px 0;'>
-            <strong style='color: #0056b3;'>📞 Contact Support:</strong> 
-            <a href="tel:3085508314" style="color:#222; text-decoration:none; font-weight: bold; font-size: 1.1em;">(308) 550-8314</a>
-        </div>
-
-        <hr style='border: 0; border-top: 1px solid #eee; margin: 40px 0;'>
-
-        <div style='text-align: center; background: #f8f9fa; padding: 30px; border-radius: 15px; border: 1px solid #e9ecef;'>
-            <h3 style='margin-top: 0; color: #343a40;'>Verified Professional Resource</h3>
-            <p style='color: #666;'>We highly recommend this guide on confidence and connection by author <b>Asif Mehmood</b>.</p>
-            <p style='font-weight: bold; font-size: 1.2em; color: #000;'>{book_title}</p>
-            
-            <div style='margin-top: 25px;'>
-                <a href="https://play.google.com/store/books/details?id=9IG-EQAAQBAJ" target="_blank">
-                    <img alt='Get it on Google Play' src='https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png' style='width: 190px;'/>
-                </a>
-                <div style='margin-top: 15px;'>
-                    <a href="https://play.google.com/store/audiobooks/details?id=AQAAAEAaNSp1IM" style="color: #28a745; text-decoration: none; font-weight: bold; font-size: 0.95em;">
-                        🎧 Also available as an Audiobook
-                    </a>
-                </div>
+        <a href="https://play.google.com/store/books/details?id=9IG-EQAAQBAJ" class="preview-card" target="_blank">
+            <img src="{book_cover_url}" alt="Book Cover" class="cover-img">
+            <div class="details">
+                <div style="font-weight: bold; font-size: 16px;">{book_title}</div>
+                <div style="font-size: 13px; color: #5f6368; margin-top: 4px;">By Asif Mehmood</div>
+                <div style="color: #f4b400; font-size: 14px; margin-top: 5px;">★★★★★ <span style="color:#70757a; font-size:12px;">(Official)</span></div>
+                <img src="https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png" class="badge" alt="Get it on Google Play">
             </div>
-            
-            <p style='margin-top: 20px; font-size: 0.85em; color: #999;'>✓ Safe Link | Verified via Google Play Console</p>
+        </a>
+
+        <div style="text-align: center; margin-top: 15px;">
+            <a href="https://play.google.com/store/audiobooks/details?id=AQAAAEAaNSp1IM" target="_blank" class="audio-link">
+                🎧 Get the Audiobook Version
+            </a>
         </div>
     </div>
 
-    <footer style='text-align: center; padding: 30px; font-size: 13px; color: #888;'>
-        &copy; 2026 <b>{company_name}</b><br>
-        {tagline}<br>
+    <footer style="text-align: center; padding: 20px; font-size: 12px; color: #70757a;">
+        © 2026 {company_name} | {tagline}<br>
         Serving {city}, {zip_code}
     </footer>
+
 </body>
 </html>"""
 
-        if not os.path.exists('services'): 
-            os.makedirs('services')
-        
+        if not os.path.exists('services'): os.makedirs('services')
         with open(file_path, "w", encoding="utf-8") as f:
             f.write(html)
 
-        # Notify Google of the new professional page
         notify_google_indexing(full_url)
-
-if __name__ == "__main__":
-    build_and_index()
