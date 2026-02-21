@@ -125,65 +125,93 @@ def build_and_index():
         file_path = f"services/{slug}.html"
         full_url = f"https://serviceshubnest.github.io/hubnest.github.io/{file_path}"
 
+        # --- THE PROFESSIONAL TEMPLATE ---
         html = f"""<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{keyword} | {company_name}</title>
+    <title>{page_title}</title>
+    <meta name="description" content="Licensed plumber providing fast, same day, affordable plumbing services in {city}. Call {phone} for a FREE estimate.">
     <style>
-        body {{ font-family: -apple-system, system-ui, sans-serif; background: #f8f9fa; margin: 0; padding: 0; color: #202124; }}
-        .header {{ background: #fff; border-bottom: 2px solid #1a73e8; padding: 20px; text-align: center; }}
-        .content {{ max-width: 600px; margin: 20px auto; padding: 20px; background: #fff; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }}
-        .preview-card {{ 
-            display: flex; border: 1px solid #dadce0; border-radius: 8px; overflow: hidden; 
-            text-decoration: none; color: inherit; margin-top: 25px; transition: background 0.2s;
-        }}
-        .preview-card:hover {{ background: #f1f3f4; }}
-        .cover-img {{ width: 120px; height: 160px; object-fit: cover; border-right: 1px solid #dadce0; }}
-        .details {{ padding: 15px; display: flex; flex-direction: column; justify-content: center; }}
-        .badge {{ width: 140px; margin-top: 10px; }}
-        .call-box {{ background: #e8f0fe; padding: 15px; border-radius: 8px; margin: 20px 0; text-align: center; }}
-        .audio-link {{ color: #1e8e3e; font-weight: bold; text-decoration: none; font-size: 14px; margin-top: 8px; display: block; }}
+        :root {{ --primary: #1a73e8; --secondary: #d93025; --text: #202124; --bg: #f8f9fa; }}
+        body {{ font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; background: var(--bg); margin: 0; padding: 0; color: var(--text); line-height: 1.5; }}
+        
+        /* Header */
+        .nav {{ background: #fff; padding: 15px 20px; border-bottom: 3px solid var(--primary); display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }}
+        .logo {{ font-weight: 800; font-size: 22px; color: var(--primary); text-decoration: none; letter-spacing: -1px; }}
+        .tagline {{ font-size: 12px; color: #5f6368; text-transform: uppercase; font-weight: bold; }}
+
+        /* Main Container */
+        .container {{ max-width: 600px; margin: 20px auto; padding: 0 15px; }}
+        .card {{ background: #fff; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.1); padding: 30px; }}
+        
+        /* Headline Section */
+        h1 {{ font-size: 24px; color: var(--primary); margin-top: 0; line-height: 1.2; }}
+        .location-badge {{ background: #e8f0fe; color: var(--primary); padding: 5px 12px; border-radius: 20px; font-size: 13px; font-weight: bold; display: inline-block; margin-bottom: 15px; }}
+
+        /* The "Canyon Hills" Style CTA Box */
+        .cta-box {{ background: #fff5f5; border: 2px solid var(--secondary); border-radius: 12px; padding: 25px; text-align: center; margin: 25px 0; }}
+        .cta-box p {{ margin: 0 0 10px 0; font-weight: bold; color: var(--secondary); letter-spacing: 1px; font-size: 14px; }}
+        .phone-link {{ font-size: 32px; color: var(--secondary); text-decoration: none; font-weight: 900; display: block; margin: 5px 0; }}
+        .btn {{ background: var(--secondary); color: #fff; padding: 12px 25px; border-radius: 5px; text-decoration: none; font-weight: bold; display: inline-block; margin-top: 15px; transition: transform 0.2s; }}
+        .btn:hover {{ transform: scale(1.05); }}
+
+        /* Details List */
+        .features {{ list-style: none; padding: 0; margin: 25px 0; }}
+        .features li {{ padding: 10px 0; border-bottom: 1px solid #eee; display: flex; align-items: center; font-size: 15px; }}
+        .features li:last-child {{ border: none; }}
+        .icon {{ margin-right: 15px; font-size: 18px; }}
+
+        /* Recommendation Section (For Book Pages) */
+        .rec-section {{ margin-top: 40px; border-top: 2px solid #eee; padding-top: 25px; }}
+        .rec-card {{ display: flex; border: 1px solid #dadce0; border-radius: 10px; text-decoration: none; color: inherit; transition: background 0.2s; }}
+        .rec-card:hover {{ background: #f8f9fa; }}
+        .rec-img {{ width: 100px; height: 140px; object-fit: cover; border-right: 1px solid #dadce0; }}
+        .rec-details {{ padding: 15px; }}
+
+        footer {{ text-align: center; padding: 40px 20px; font-size: 13px; color: #70757a; }}
     </style>
 </head>
 <body>
 
-    <div class="header">
-        <h1 style="margin:0; font-size: 24px;">{company_name}</h1>
-        <p style="margin:5px 0 0; color: #1a73e8; font-weight: bold; font-size: 14px; text-transform: uppercase;">{tagline}</p>
+    <div class="nav">
+        <div>
+            <a href="#" class="logo">{company_name}</a>
+            <div class="tagline">{tagline}</div>
+        </div>
+        <a href="tel:3085508314" style="background:var(--primary); color:#fff; padding:8px 15px; border-radius:5px; text-decoration:none; font-weight:bold; font-size:14px;">CALL NOW</a>
     </div>
 
-    <div class="content">
-        <h2 style="font-size: 20px; color: #1a73e8;">{keyword}</h2>
-        <p>Expert solutions for <b>{city}</b>. At {company_name}, we are dedicated to providing high-quality results and professional excellence.</p>
+    <div class="container">
+        <div class="card">
+            <span class="location-badge">📍 {city}, {zip_code}</span>
+            <h1>{keyword}</h1>
+            
+            <p>Reliable, local expertise you can count on. Whether it is an emergency fix or a planned installation, our team in <b>{city}</b> delivers high-quality results at a price you can afford.</p>
 
-        {action_section}
-
-        <hr style="border:0; border-top: 1px solid #eee; margin: 30px 0;">
-
-        <p style="font-size: 12px; color: #70757a; text-transform: uppercase; font-weight: bold; letter-spacing: 0.5px;">Official Recommendation</p>
-        
-        <a href="https://play.google.com/store/books/details?id=9IG-EQAAQBAJ" class="preview-card" target="_blank">
-            <img src="{book_cover_url}" alt="Book Cover" class="cover-img">
-            <div class="details">
-                <div style="font-weight: bold; font-size: 16px;">{book_title}</div>
-                <div style="font-size: 13px; color: #5f6368; margin-top: 4px;">By Asif Mehmood</div>
-                <div style="color: #f4b400; font-size: 14px; margin-top: 5px;">★★★★★ <span style="color:#70757a; font-size:12px;">(Official)</span></div>
-                <img src="https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png" class="badge" alt="Get it on Google Play">
+            <div class="cta-box">
+                <p>LICENSED • BONDED • INSURED</p>
+                <strong>FREE ESTIMATES & SAME DAY SERVICE</strong>
+                <a href="tel:3085508314" class="phone-link">{phone}</a>
+                <a href="tel:3085508314" class="btn">Emergency Dispatch</a>
             </div>
-        </a>
 
-        <div style="text-align: center; margin-top: 15px;">
-            <a href="https://play.google.com/store/audiobooks/details?id=AQAAAEAaNSp1IM" target="_blank" class="audio-link">
-                🎧 Get the Audiobook Version
-            </a>
+            <ul class="features">
+                <li><span class="icon">🕒</span> <b>24/7 Availability:</b> We never close for emergencies.</li>
+                <li><span class="icon">🛠️</span> <b>Full Service:</b> Drains, Pipes, Heaters & more.</li>
+                <li><span class="icon">💰</span> <b>Fair Pricing:</b> Upfront quotes with no hidden fees.</li>
+                <li><span class="icon">🏆</span> <b>Guaranteed Work:</b> Your satisfaction is our priority.</li>
+            </ul>
+
+            {recommendation_box}
         </div>
     </div>
 
-    <footer style="text-align: center; padding: 20px; font-size: 12px; color: #70757a;">
-        © 2026 {company_name} | {tagline}<br>
-        Serving {city}, {zip_code}
+    <footer>
+        © 2026 {company_name} Plumbing & Professional Services<br>
+        Serving {city}, {zip_code} and nearby areas.<br>
+        <span style="display:block; margin-top:10px; color: var(--primary); font-weight:bold;">24/7 Dispatch: {phone}</span>
     </footer>
 
 </body>
