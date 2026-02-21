@@ -19,7 +19,13 @@ problem_intent_book = ["Overcoming Self-Doubt", "Stop Overthinking", "Build Conf
 buyer_modifiers = ["Book", "Guide", "Blueprint", "Practical Guide"]
 audience_modifiers = ["for Professionals", "for Introverts", "for Leaders", "for Career Growth"]
 
-ALL_EXPANDED_BOOK_KEYWORDS = [f"{b} {p} {a}" for b in buyer_modifiers for p in problem_intent_book for l in audience_modifiers]
+# Change 'for l in audience_modifiers' to 'for a in audience_modifiers'
+ALL_EXPANDED_BOOK_KEYWORDS = [
+    f"{b} {p} {a}" 
+    for b in buyer_modifiers 
+    for p in problem_intent_book 
+    for a in audience_modifiers
+]
 
 # ==========================================
 # 🚀 2. THE INDEXING API LOGIC
