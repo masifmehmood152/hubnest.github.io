@@ -194,3 +194,9 @@ def build_and_index():
             f.write(html)
 
         notify_google_indexing(full_url)
+# --- THE CODE BELOW MUST BE FLUSH TO THE LEFT (NO INDENTATION) ---
+
+if __name__ == "__main__":
+    print("🎬 Starting...")
+    build_and_index()
+    print("✅ Finished.")
