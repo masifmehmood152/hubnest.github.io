@@ -81,15 +81,29 @@ def build_and_index():
         file_path = f"services/{slug}.html"
         full_url = f"https://serviceshubnest.github.io/hubnest.github.io/{file_path}"
 
-        # Simple HTML Template
-        html = f"""<!DOCTYPE html><html><head><title>{keyword}</title></head>
-        <body style='font-family:sans-serif; padding:20px;'>
-        <h1>{keyword}</h1>
-        <p>Expert service in {city}, {zip_code}. Contact us for support.</p>
-        <hr>
-        <h3>Featured: {book_title}</h3>
-        <p>Available now for {city} residents.</p>
-        </body></html>"""
+        # Professional Book Promotion Section
+    html = f"""<!DOCTYPE html><html><head><title>{keyword}</title></head>
+    <body style='font-family:sans-serif; padding:20px; line-height:1.6;'>
+    <h1>{keyword}</h1>
+    <p>Providing expert service in {city}, {zip_code}. Contact us for immediate support.</p>
+    
+    <div style='background:#f4f4f4; padding:20px; border-radius:10px; margin-top:30px; border:1px solid #ddd;'>
+        <h3 style='margin-top:0;'>Special Recommendation: {book_title}</h3>
+        <p>By Author <b>Asif Mehmood</b></p>
+        <p>Master the art of confidence and connection with this practical guide.</p>
+        
+        <div style='margin-top:15px;'>
+            <a href="https://play.google.com/store/books/details?id=9IG-EQAAQBAJ" 
+               style="background:#007bff; color:white; padding:10px 20px; text-decoration:none; border-radius:5px; margin-right:10px; display:inline-block;">
+               📖 Get the E-Book
+            </a>
+            <a href="https://play.google.com/store/audiobooks/details?id=AQAAAEAaNSp1IM" 
+               style="background:#28a745; color:white; padding:10px 20px; text-decoration:none; border-radius:5px; display:inline-block;">
+               🎧 Get the Audiobook
+            </a>
+        </div>
+    </div>
+    </body></html>"""
 
         if not os.path.exists('services'): os.makedirs('services')
         with open(file_path, "w") as f:
