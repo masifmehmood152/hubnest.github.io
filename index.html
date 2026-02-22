@@ -2,24 +2,37 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="google-site-verification" content="ZJd3MD3ZSBZ8GwejG-M-wF6CUGnj8nSykUOm64tB6JU" />
-    <title>ServicesHubnest | Professional Service Directory</title>
+    <title>Hubnest Services | Essential Home Solutions & Expert Guides</title>
+    <style>
+        :root { --primary: #0f172a; --accent: #2563eb; --text: #334155; --light: #f8fafc; }
+        body { font-family: 'Inter', -apple-system, sans-serif; margin: 0; color: var(--text); background: var(--light); }
+        header { background: var(--primary); color: white; padding: 60px 20px; text-align: center; }
+        header h1 { margin: 0; font-size: 2.5rem; letter-spacing: -1px; }
+        header p { opacity: 0.9; font-size: 1.1rem; margin-top: 10px; }
+        main { max-width: 900px; margin: -40px auto 40px; background: white; padding: 40px; border-radius: 12px; shadow: 0 10px 15px -3px rgba(0,0,0,0.1); }
+        h2 { border-bottom: 2px solid #e2e8f0; padding-bottom: 10px; color: var(--primary); }
+        .service-grid { list-style: none; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 15px; margin-top: 20px; }
+        .service-grid li a { display: block; padding: 15px; background: #f1f5f9; color: var(--accent); text-decoration: none; border-radius: 8px; font-weight: 500; transition: all 0.2s; border: 1px solid #e2e8f0; }
+        .service-grid li a:hover { background: var(--accent); color: white; transform: translateY(-2px); }
+        footer { text-align: center; padding: 40px; color: #64748b; font-size: 0.9rem; }
+    </style>
 </head>
 <body>
     <header>
-        <h1>ServicesHubnest</h1>
-        <p>Your 2026 Resource for Professional Maintenance and Expert Guides.</p>
+        <h1>Hubnest Services</h1>
+        <p>Essential Home Solutions • Expert Maintenance • Professional Guides</p>
     </header>
     <main>
-        <h2>Available Services</h2>
-        <p>Our automated directory updates every hour with new local plumbing guides and resources.</p>
+        <h2>Latest Service Directories</h2>
+        <p>Explore our curated resources for home maintenance and professional local services.</p>
         
-        <ul id="service-list">
-        </ul>
-
+        <ul class="service-grid" id="service-list">
+            </ul>
     </main>
     <footer>
-        <p>Secure. Professional. Automated.</p>
+        <p>&copy; 2026 Hubnest Services. All rights reserved.<br>Providing Reliable Home Solutions Across the Nation.</p>
     </footer>
 </body>
 </html>
