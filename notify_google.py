@@ -1,83 +1,49 @@
 import os
 import json
+import random
+import pandas as pd
+import string
 import httplib2
-import requests  # Added for the Live Page check
+import requests
+import time
 from oauth2client.service_account import ServiceAccountCredentials
 
-def notify_google():
-    # 1. Setup Google Credentials
-    json_creds = os.getenv("GOOGLE_CREDENTIALS")
-    if not json_creds:
-        print("❌ GOOGLE_CREDENTIALS Secret is missing!")
-        return
-    # --- ADD THIS HERE ---
-    log_file = "indexed_urls.txt"
-    if not os.path.exists(log_file):
-        with open(log_file, "w") as f:
-            pass # Creates an empty file so Git doesn't crash
-        print(f"📄 Initialized {log_file}")
-    # --------------------
-    scopes = ["https://www.googleapis.com/auth/indexing"]
-    try:
-        credentials = ServiceAccountCredentials.from_json_keyfile_dict(json.loads(json_creds), scopes)
-        http = credentials.authorize(httplib2.Http())
-        endpoint = "https://indexing.googleapis.com/v3/urlNotifications:publish"
+# ... (Keep your existing keyword lists and generate_uid here) ...
 
-        # --- NEW: MEMORY LOGIC ---
-        log_file = "indexed_urls.txt"
-        if os.path.exists(log_file):
-            with open(log_file, "r") as f:
-                indexed_files = set(f.read().splitlines())
-        else:
-            indexed_files = set()
+def update_sitemap_xml(base_url):
+    """Generates a clean, raw XML sitemap."""
+    xml_content = ['<?xml version="1.0" encoding="UTF-8"?>']
+    xml_content.append('<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">')
+    xml_content.append(f'  <url><loc>{base_url}</loc></url>')
+    
+    if os.path.exists('services'):
+        for file in os.listdir('services'):
+            if file.endswith(".html"):
+                xml_content.append(f'  <url><loc>{base_url}services/{file}</loc></url>')
+    
+    xml_content.append('</urlset>')
+    with open("sitemap.xml", "w", encoding="utf-8") as f:
+        f.write("\n".join(xml_content))
+    # Crucial: Create .nojekyll so Google can read the XML
+    with open(".nojekyll", "w") as f: f.write("")
+    print("✅ Sitemap and .nojekyll updated.")
 
-        # 2. Find the files
-        if not os.path.exists('services'):
-            print("❌ No services folder found.")
-            return
-
-        # NEW: Filter so we ONLY see files that haven't been indexed yet
-        all_files = [f for f in os.listdir('services') if f.endswith('.html')]
-        new_files = [f for f in all_files if f not in indexed_files]
-        
-        if not new_files:
-            print("⏭️ No new HTML files to index. Skipping.")
-            return
-
-        print(f"🔍 Found {len(new_files)} NEW files to index. (Total files: {len(all_files)})")
-
-        # 3. Notify Google for each NEW file
-        for file_name in new_files:
-            # Match your URL structure
-            full_url = f"https://serviceshubnest.github.io/hubnest.github.io/services/{file_name}"
-            
-            # --- NEW: 120s SAFETY CHECK ---
-            # Verify the page is actually LIVE on GitHub before telling Google
-            try:
-                live_check = requests.get(full_url, timeout=10)
-                if live_check.status_code != 200:
-                    print(f"⚠️ {file_name} not live yet (Status {live_check.status_code}). Skipping.")
-                    continue
-            except:
-                continue
-
-            # 4. SEND TO GOOGLE
-            content = json.dumps({"url": full_url, "type": "URL_UPDATED"})
-            response, content_resp = http.request(endpoint, method="POST", body=content)
-            
-            if response.status == 200:
-                print(f"✅ Google Notified: {full_url}")
-                # --- NEW: UPDATE LOG ---
-                with open(log_file, "a") as f:
-                    f.write(file_name + "\n")
-            elif response.status == 429:
-                print("🛑 Quota Limit Reached.")
-                break
-            else:
-                print(f"⚠️ Status {response.status} for {file_name}")
-
-    except Exception as e:
-        print(f"❌ Indexing Error: {e}")
+def notify_google(base_url):
+    # ... (Insert your notify_google logic here) ...
+    # IMPORTANT: Keep that 'requests.get' check you added! 
+    # It prevents Google from seeing 404s if GitHub is slow.
+    pass
 
 if __name__ == "__main__":
-    notify_google()
+    BASE_URL = "https://serviceshubnest.github.io/hubnest.github.io/"
+    
+    # STEP 1: Generate new content
+    print("🚀 Generating Pages...")
+    # build_and_index() logic here...
+
+    # STEP 2: Update Sitemap
+    update_sitemap_xml(BASE_URL)
+
+    # STEP 3: Notify Google (Only for existing live pages)
+    print("📢 Notifying Google of NEW live pages...")
+    notify_google(BASE_URL)
