@@ -68,26 +68,37 @@ def build_and_index():
             </ul>
             """
         else:
-            # --- 📖 BOOK DESIGN (EBOOK + AUDIOBOOK) ---
+            # --- 📖 BOOK DATA (Ebook + Audiobook) ---
             keyword = random.choice(ALL_EXPANDED_BOOK_KEYWORDS)
             page_title = f"{keyword} | Official {company_name} Guide"
             slug = f"book-{keyword.lower().replace(' ', '-')}-{zip_code}"
             
-            main_content = f"""
-            <span class="badge badge-green">📖 OFFICIAL PUBLICATION</span>
+            content_html = f"""
+            <span class="location-badge" style="background:#e6f4ea; color:#1e8e3e;">📖 Official Publication</span>
             <h1>{keyword}</h1>
-            <p>Master the art of leadership and personal growth. Our expert-led guide is now available in multiple formats to help you grow anywhere, anytime.</p>
+            <p>Master the blueprint for confidence and leadership. Curated by the <b>{company_name}</b> network for professionals in {city}.</p>
             
             <div class="book-card">
                 <div class="book-flex">
                     <img src="https://m.media-amazon.com/images/I/41-A8mN-DmL._SY445_SX342_.jpg" class="book-img" alt="Book Cover">
+                    
                     <div class="book-info">
-                        <h3>{book_title}</h3>
-                        <p>By <b>Asif Mehmood</b></p>
-                        <div class="stars">★★★★★ <span>(Official)</span></div>
+                        <h3 style="margin:0 0 5px 0; font-size:18px;">{book_title}</h3>
+                        <p style="margin:0; font-size:14px; color:#5f6368;">By <b>Asif Mehmood</b></p>
                         
-                        <a href="https://play.google.com/store/books/details?id=9IG-EQAAQBAJ" class="btn btn-green">📄 Get eBook</a>
-                        <a href="https://play.google.com/store/audiobooks/details?id=AQAAAEAaNSp1IM" class="btn btn-blue">🎧 Get Audiobook</a>
+                        <div style="margin-top:18px; border-top: 1px solid #eee; padding-top:10px;">
+                            <span style="font-size:11px; font-weight:bold; color:#1e8e3e; display:block; margin-bottom:5px;">📄 DIGITAL E-BOOK</span>
+                            <a href="https://play.google.com/store/books/details?id=9IG-EQAAQBAJ" target="_blank">
+                                <img src="https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png" style="width:140px;" alt="Get eBook on Google Play">
+                            </a>
+                        </div>
+
+                        <div style="margin-top:12px; border-top: 1px solid #eee; padding-top:10px;">
+                            <span style="font-size:11px; font-weight:bold; color:#1a73e8; display:block; margin-bottom:5px;">🎧 AUDIOBOOK VERSION</span>
+                            <a href="https://play.google.com/store/audiobooks/details?id=AQAAAEAaNSp1IM" target="_blank">
+                                <img src="https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png" style="width:140px;" alt="Get Audiobook on Google Play">
+                            </a>
+                        </div>
                     </div>
                 </div>
             </div>
