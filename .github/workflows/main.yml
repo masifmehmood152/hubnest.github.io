@@ -1,59 +1,30 @@
-name: 30-Min Public Autopilot
-
-on:
-  schedule:
-    - cron: '*/30 * * * *' # Every 30 minutes
-  workflow_dispatch:
-
-jobs:
-  build-and-index:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-
-      - name: Setup Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.9'
-
-      - name: Install Deps
-        run: pip install pandas openpyxl httplib2 oauth2client requests
-
-      # Step 1: Generate the new HTML pages
+# Step 1: Generate the new HTML pages (Your content_manager.py must also create sitemap.xml)
       - name: Generate 4 Pages
         run: python content_manager.py
 
-      # Step 2: Push the NEW HTML files first so they become "Live"
-      # Google can't index a 404 page, so they must be on GitHub first
-      - name: Push HTML to GitHub
+      # STEP 2: ADD THIS HERE (Replacing your old Step 2)
+      - name: Push HTML, Sitemap, and .nojekyll
         run: |
           git config --global user.name "Hubnest-Bot"
           git config --global user.email "bot@hubnest.com"
-          git add services/*.html
-          git commit -m "Create new service pages [skip ci]" || echo "No new pages"
+          # This ensures the sitemap and .nojekyll are uploaded so Google can find them
+          git add services/*.html sitemap.xml .nojekyll
+          git commit -m "Update content and sitemap [skip ci]" || echo "No changes"
           git push
 
-      # Step 3: Wait for GitHub Pages to actually deploy the files
+      # Step 3: Wait (Already in your code)
       - name: ⏳ Wait for Deployment
         run: sleep 120
 
-      # Step 4: Now that pages are LIVE, notify Google
+      # Step 4: Notify Google (Already in your code)
       - name: Notify Google
         run: python notify_google.py
         env:
           GOOGLE_CREDENTIALS: ${{ secrets.GOOGLE_CREDENTIALS }}
 
-      # Step 5: Save the "indexed_urls.txt" log back to the repo
+      # Step 5: Save the log (Already in your code)
       - name: Save Indexing Log
         run: |
-          git config --global user.name "Hubnest-Bot"
-          git config --global user.email "bot@hubnest.com"
-          
-          # Triple-safety: ensure the file exists so 'git add' doesn't fail
-          touch indexed_urls.txt
-          
           git add indexed_urls.txt
-          
-          # Only commit if the log actually changed
-          git diff --staged --quiet || (git commit -m "Update indexing log [skip ci]" && git push)
+          git commit -m "Update indexing log [skip ci]" || echo "No log changes"
+          git push
