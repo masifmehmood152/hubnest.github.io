@@ -6,47 +6,43 @@ on:
   workflow_dispatch:
 
 jobs:
-  build:
+  build-and-index:
     runs-on: ubuntu-latest
     permissions:
       contents: write
-    outputs:
-      status: ${{ job.status }}
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          # Fetch all history so git push works reliably
+          fetch-depth: 0
+
       - name: Setup Python
         uses: actions/setup-python@v4
         with:
           python-version: '3.9'
-      - name: Install Deps
-        run: pip install pandas openpyxl requests
-      
+
+      - name: Install All Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install pandas openpyxl requests httplib2 oauth2client
+
       - name: Generate Content and Sitemap
         run: python content_manager.py
-        
+
       - name: Push to GitHub
         run: |
           git config --global user.name "Hubnest-Bot"
           git config --global user.email "bot@hubnest.com"
           git add .
+          # The || exit 0 prevents the workflow from failing if there are no new changes
           git commit -m "Publishing new pages [skip ci]" || exit 0
           git push
 
-  index:
-    needs: build # <--- THIS ENSURES THE PUSH FINISHED FIRST
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - name: Setup Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.9'
-      - name: Install Indexing Deps
-        run: pip install httplib2 oauth2client requests
-        
       - name: ⏳ Wait for GitHub Pages Deployment
-        run: sleep 60 # Gives GitHub time to move files from Repo to Live Web
-        
+        # We wait here to ensure GitHub's servers have received the push
+        run: sleep 60 
+
       - name: Notify Google
         env:
           GOOGLE_CREDENTIALS: ${{ secrets.GOOGLE_CREDENTIALS }}
