@@ -9,6 +9,7 @@ def link_to_homepage(filename, title):
         return
     
     # 🛑 FIX: Use a real marker, NEVER an empty string ""
+     # To this:
     marker = ""
     link_url = f"services/{filename}"
     new_link_html = f'            <li><a href="{link_url}">{title}</a></li>'
