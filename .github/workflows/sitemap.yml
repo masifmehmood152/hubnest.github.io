@@ -2,12 +2,16 @@ name: Generate Sitemap
 
 on:
   push:
-    branches: [ main ]  # Runs every time you upload new files
+    branches: [ main ]
 
 jobs:
   sitemap_job:
     runs-on: ubuntu-latest
     name: Generate a sitemap
+    # This block is crucial for GitHub Actions to push back to the repo
+    permissions:
+      contents: write
+      
     steps:
     - name: Checkout the repo
       uses: actions/checkout@v4
@@ -17,15 +21,20 @@ jobs:
     - name: Generate the sitemap
       uses: cicirello/generate-sitemap@v1
       with:
-        # Change this line to include the folder name
+        # Check if your site is at / or /hubnest.github.io/
         base-url-path: https://serviceshubnest.github.io/hubnest.github.io/
         path-to-root: .
         include-pdf: false
 
     - name: Commit and push the sitemap
       run: |
-        git config --global user.name 'github-actions'
-        git config --global user.email 'github-actions@github.com'
+        git config --global user.name 'github-actions[bot]'
+        git config --global user.email 'github-actions[bot]@users.noreply.github.com'
         git add sitemap.xml
-        git commit -m "Automated sitemap update" || exit 0
-        git push
+        # Use 'git diff-index' to check for changes before committing
+        if git diff-index --quiet HEAD --; then
+          echo "No changes to sitemap.xml"
+        else
+          git commit -m "Automated sitemap update"
+          git push
+        fi
