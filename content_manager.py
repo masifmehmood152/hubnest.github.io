@@ -5,22 +5,32 @@ import pandas as pd
 import string
 def link_to_homepage(filename, title):
     homepage = "index.html"
-    if not os.path.exists(homepage): return
-    with open(homepage, "r", encoding="utf-8") as f:
-        html_content = f.read()
+    if not os.path.exists(homepage): 
+        return
     
-    # We point to services/ because that's where your files are stored
+    # The specific marker you added to your index.html
+    marker = ""
     link_url = f"services/{filename}"
     new_link_html = f'            <li><a href="{link_url}">{title}</a></li>'
 
-    if link_url in html_content: return
+    with open(homepage, "r", encoding="utf-8") as f:
+        html_content = f.read()
 
-    marker = ""
+    # Prevent duplicate links
+    if link_url in html_content: 
+        return
+
+    # Only replace if the marker actually exists
     if marker in html_content:
+        # We replace the marker with itself + the new link
+        # This keeps the marker there for the next run
         updated_html = html_content.replace(marker, f"{marker}\n{new_link_html}")
+        
         with open(homepage, "w", encoding="utf-8") as f:
             f.write(updated_html)
         print(f"🔗 Linked {title} to homepage.")
+    else:
+        print(f"⚠️ Warning: Marker '{marker}' not found in index.html")
 # ==========================================
 # 🔥 1. SUPERCHARGED KEYWORD LISTS (10,000+ COMBOS)
 # ==========================================
