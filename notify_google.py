@@ -10,7 +10,13 @@ def notify_google():
     if not json_creds:
         print("❌ GOOGLE_CREDENTIALS Secret is missing!")
         return
-
+    # --- ADD THIS HERE ---
+    log_file = "indexed_urls.txt"
+    if not os.path.exists(log_file):
+        with open(log_file, "w") as f:
+            pass # Creates an empty file so Git doesn't crash
+        print(f"📄 Initialized {log_file}")
+    # --------------------
     scopes = ["https://www.googleapis.com/auth/indexing"]
     try:
         credentials = ServiceAccountCredentials.from_json_keyfile_dict(json.loads(json_creds), scopes)
