@@ -2,31 +2,43 @@ import os
 import json
 import random
 import pandas as pd
-import shutil
+import string
 
 # ==========================================
-# 🔥 1. KEYWORD LISTS
+# 🔥 1. SUPERCHARGED KEYWORD LISTS (10,000+ COMBOS)
 # ==========================================
-problem_intent = ["Fix", "Repair", "Emergency Repair", "24/7 Repair", "Immediate Fix", "Stop Leak Now", "Call Now for Repair"]
-service_types = ["Plumber", "Drain Cleaning", "Burst Pipe Repair", "Water Heater Installation", "Sewer Line Replacement", "Slab Leak Repair", "Toilet Repair"]
-location_modifiers = ["{city}", "{zip_code}", "Near Me", "Local", "Available Now"]
 
-ULTRA_PLUMBING_KEYWORDS = [f"{i} {s} {l}" for i in problem_intent for s in service_types for l in location_modifiers]
+# --- 📞 PLUMBING (High Intent) ---
+p_urgency = ["Emergency", "24-7", "Instant", "Same-Day", "Licensed", "Fast", "Reliable", "Expert", "Affordable", "Top-Rated"]
+p_intent = ["Fix", "Repair", "Installation", "Replacement", "Service", "Unclogging", "Detection", "Maintenance", "Cleanup", "Inspection"]
+p_service = ["Plumber", "Drain", "Pipe", "Water Heater", "Sewer Line", "Slab Leak", "Toilet", "Faucet", "Sump Pump", "Gas Line", "Main Line", "Boiler"]
+p_local = ["{city}", "{zip_code}", "Near Me", "Local", "In my area", "Nearby", "Neighborhood", "Regional", "District", "Citywide"]
 
-problem_intent_book = ["Overcoming Self-Doubt", "Stop Overthinking", "Build Confidence", "Improve Social Skills"]
-buyer_modifiers = ["Book", "Guide", "Blueprint", "Practical Guide"]
-audience_modifiers = ["for Professionals", "for Introverts", "for Leaders", "for Career Growth"]
+ULTRA_PLUMBING_KEYWORDS = [f"{u} {i} {s} {l}" for u in p_urgency for i in p_intent for s in p_service for l in p_local]
 
-ALL_EXPANDED_BOOK_KEYWORDS = [f"{b} {p} {a}" for b in buyer_modifiers for p in problem_intent_book for a in audience_modifiers]
+# --- 📖 BOOKS (High Intent) ---
+b_format = ["Digital", "Audiobook", "Print", "E-book", "Official"]
+b_buyer = ["Book", "Guide", "Blueprint", "Manual", "Masterclass", "Handbook", "Strategy", "System"]
+b_problem = ["Overcoming Self-Doubt", "Stop Overthinking", "Build Confidence", "Social Skills", "Public Speaking", "Anxiety", "Networking", "Leadership"]
+b_audience = ["Professionals", "Introverts", "Leaders", "Career Starters", "Entrepreneurs", "Executives", "Graduates", "Managers"]
+b_outcome = ["Success", "Growth", "Freedom", "Connection", "Impact"]
+
+ALL_EXPANDED_BOOK_KEYWORDS = [f"{f} {bu} on {p} for {a} for {o}" for f in b_format for bu in b_buyer for p in b_problem for a in b_audience for o in b_outcome]
 
 # ==========================================
-# 🛠️ 2. PAGE BUILDER LOGIC
+# 🛠️ 2. UTILITIES
+# ==========================================
+def generate_uid(length=4):
+    """Generates a random ID like 'a1z9' to ensure unique URLs."""
+    return ''.join(random.choices(string.ascii_lowercase + string.digits, k=length))
+
+# ==========================================
+# 🛠️ 3. PAGE BUILDER LOGIC
 # ==========================================
 def build_and_index():
-    # 🧹 CLEANUP: Only notify Google about NEW pages
-    if os.path.exists('services'):
-        shutil.rmtree('services')
-    os.makedirs('services')
+    # ✅ FIX: We only create the folder if it's missing. We NEVER delete it now.
+    if not os.path.exists('services'):
+        os.makedirs('services')
 
     try:
         df = pd.read_excel("locations.xlsx")
@@ -39,67 +51,56 @@ def build_and_index():
     phone = "(308) 550-8314"
     book_title = "Becoming You: Confidence, Connection, and Growth"
 
+    # Generate pages for both categories in one run
     for category in ["plumbing", "book"]:
         row = df.sample(n=1).iloc[0]
         city, zip_code = str(row['City']), str(row['ZipCode'])
+        uid = generate_uid()
+        city_slug = city.lower().replace(' ', '-')
 
         if category == "plumbing":
-            # --- 📞 PRO PLUMBING DATA ---
+            # --- 📞 PRO PLUMBING LOGIC ---
             keyword = random.choice(ULTRA_PLUMBING_KEYWORDS).format(city=city, zip_code=zip_code)
-            page_title = f"{company_name} Plumbing: Affordable Local Plumber in {city}"
-            slug = f"plumber-{city.lower().replace(' ', '-')}-{zip_code}"
+            page_title = f"{keyword} | {company_name} Plumbing"
             
-            # Note: tel: links trigger the dialer on mobile
+            # UNIQUE SEO SLUG
+            slug = f"{keyword.lower().replace(' ', '-')}-{uid}"
+            
             main_content = f"""
             <span class="badge">📍 LOCAL SERVICE: {city}</span>
             <h1>{keyword}</h1>
-            <p>Licensed plumbing experts providing fast, same-day service. We specialize in emergency repairs and routine maintenance for homes in <b>{city}</b>.</p>
+            <p>Licensed plumbing experts providing fast, same-day service in <b>{city}</b>. We specialize in emergency repairs and 24/7 maintenance.</p>
             
             <div class="cta-box">
                 <p>LICENSED • BONDED • INSURED</p>
                 <strong>FREE ESTIMATE & 24/7 DISPATCH</strong>
                 <a href="tel:3085508314" class="phone-link">(308) 550-8314</a>
-                
                 <a href="tel:3085508314" class="btn btn-red">CALL FOR SERVICE</a>
                 <p style="margin: 10px 0 0; font-size: 12px; color: #1e8e3e; font-weight: bold;">✅ Tap to Call Now</p>
             </div>
-
-            <ul class="features">
-                <li>✅ <b>Same Day:</b> Fast local response.</li>
-                <li>✅ <b>24/7:</b> Emergency repairs available.</li>
-                <li>✅ <b>Transparent:</b> No upfront or hidden fees.</li>
-            </ul>
             """
         else:
-            # --- 📖 BOOK DATA (Ebook + Audiobook) ---
+            # --- 📖 BOOK LOGIC ---
             keyword = random.choice(ALL_EXPANDED_BOOK_KEYWORDS)
             page_title = f"{keyword} | Official {company_name} Guide"
-            slug = f"book-{keyword.lower().replace(' ', '-')}-{zip_code}"
             
-            content_html = f"""
-            <span class="location-badge" style="background:#e6f4ea; color:#1e8e3e;">📖 Official Publication</span>
+            # UNIQUE SEO SLUG
+            slug = f"book-{keyword.lower().replace(' ', '-')}-{city_slug}-{uid}"
+            
+            main_content = f"""
+            <span class="badge badge-green">📖 Official Publication</span>
             <h1>{keyword}</h1>
-            <p>Master the blueprint for confidence and leadership. Curated by the <b>{company_name}</b> network for professionals in {city}.</p>
+            <p>Master the blueprint for confidence and leadership. This {keyword} is curated for professionals in {city}.</p>
             
             <div class="book-card">
                 <div class="book-flex">
                     <img src="https://m.media-amazon.com/images/I/41-A8mN-DmL._SY445_SX342_.jpg" class="book-img" alt="Book Cover">
-                    
                     <div class="book-info">
                         <h3 style="margin:0 0 5px 0; font-size:18px;">{book_title}</h3>
                         <p style="margin:0; font-size:14px; color:#5f6368;">By <b>Asif Mehmood</b></p>
-                        
-                        <div style="margin-top:18px; border-top: 1px solid #eee; padding-top:10px;">
-                            <span style="font-size:11px; font-weight:bold; color:#1e8e3e; display:block; margin-bottom:5px;">📄 DIGITAL E-BOOK</span>
+                        <div style="margin-top:15px; border-top: 1px solid #eee; padding-top:10px;">
                             <a href="https://play.google.com/store/books/details?id=9IG-EQAAQBAJ" target="_blank">
-                                <img src="https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png" style="width:140px;" alt="Get eBook on Google Play">
-                            </a>
-                        </div>
-
-                        <div style="margin-top:12px; border-top: 1px solid #eee; padding-top:10px;">
-                            <span style="font-size:11px; font-weight:bold; color:#1a73e8; display:block; margin-bottom:5px;">🎧 AUDIOBOOK VERSION</span>
-                            <a href="https://play.google.com/store/audiobooks/details?id=AQAAAEAaNSp1IM" target="_blank">
-                                <img src="https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png" style="width:140px;" alt="Get Audiobook on Google Play">
+                                <img src="https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png" style="width:130px;" alt="Get eBook">
                             </a>
                         </div>
                     </div>
@@ -120,28 +121,16 @@ def build_and_index():
         .header {{ background: #fff; border-bottom: 3px solid var(--blue); padding: 20px; text-align: center; }}
         .container {{ max-width: 550px; margin: 25px auto; padding: 0 15px; }}
         .card {{ background: #fff; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); padding: 30px; }}
-        h1 {{ font-size: 22px; color: var(--blue); margin: 10px 0; }}
+        h1 {{ font-size: 22px; color: var(--blue); margin: 10px 0; text-transform: capitalize; }}
         .badge {{ background: #e8f0fe; color: var(--blue); padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: bold; }}
         .badge-green {{ background: #e6f4ea; color: var(--green); }}
-        
-        /* Plumber CTA */
         .cta-box {{ border: 2px solid var(--red); background: #fff5f5; border-radius: 10px; padding: 20px; text-align: center; margin: 20px 0; }}
         .phone-link {{ display: block; font-size: 28px; color: var(--red); text-decoration: none; font-weight: 800; margin: 5px 0; }}
-        
-        /* Book Feature */
-        .book-card {{ border: 1px solid #dadce0; border-radius: 10px; padding: 20px; background: #fcfcfc; }}
-        .book-flex {{ display: flex; gap: 20px; align-items: flex-start; }}
-        .book-img {{ width: 100px; border-radius: 5px; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }}
-        .stars {{ color: #f4b400; margin-bottom: 10px; }}
-        
-        /* Buttons */
         .btn {{ display: inline-block; padding: 10px 18px; color: #fff; text-decoration: none; border-radius: 5px; font-weight: bold; margin-top: 8px; font-size: 14px; text-align: center; }}
         .btn-red {{ background: var(--red); width: 80%; }}
-        .btn-green {{ background: var(--green); }}
-        .btn-blue {{ background: var(--blue); }}
-        
-        .features {{ list-style: none; padding: 0; }}
-        .features li {{ padding: 8px 0; border-bottom: 1px solid #eee; }}
+        .book-card {{ border: 1px solid #dadce0; border-radius: 10px; padding: 20px; background: #fcfcfc; }}
+        .book-flex {{ display: flex; gap: 20px; align-items: flex-start; }}
+        .book-img {{ width: 80px; border-radius: 5px; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }}
         footer {{ text-align: center; padding: 30px; font-size: 12px; color: #70757a; }}
     </style>
 </head>
@@ -151,9 +140,7 @@ def build_and_index():
         <div style="font-size:12px; font-weight:bold; color:#5f6368;">{tagline}</div>
     </div>
     <div class="container">
-        <div class="card">
-            {main_content}
-        </div>
+        <div class="card">{main_content}</div>
     </div>
     <footer>
         © 2026 {company_name} Professional Services<br>
@@ -164,8 +151,8 @@ def build_and_index():
 
         with open(f"services/{slug}.html", "w", encoding="utf-8") as f:
             f.write(html)
+        print(f"✅ Created: {slug}")
 
 if __name__ == "__main__":
-    print("🎬 Starting Pro Build...")
+    print("🎬 Starting 10k SEO Build...")
     build_and_index()
-    print("✅ Finished. Ready for Google.")
